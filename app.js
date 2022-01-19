@@ -7,6 +7,13 @@ const MongoStore = require('connect-mongo');
 
 const app = express();
 app.use(cors());
+app.all('*', function (req, res, next) {
+  var origin = req.get('origin');
+  res.header('Access-Control-Allow-Origin', origin);
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 //Set port as process.env.PORT if it is present otherwise set it to 4000
 const port = process.env.PORT || 4000;
 
