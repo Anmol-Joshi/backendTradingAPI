@@ -1,11 +1,12 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 // var genuuid = require('uuid').v4;
 // const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
 const app = express();
-
+app.use(cors());
 //Set port as process.env.PORT if it is present otherwise set it to 4000
 const port = process.env.PORT || 4000;
 
