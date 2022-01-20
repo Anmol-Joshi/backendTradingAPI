@@ -4,6 +4,18 @@ const Trade = require('../models/trade.js');
 const buyHelper = require('../middlewares/buyHelper');
 const sellHelper = require('../middlewares/sellHelper');
 const updateHelper = require('../middlewares/updateHelper');
+const deleteHelper = require('../middlewares/deleteHelper');
+
+// GET all trades
+router.get('/', (req, res) => {
+  Trade.find({})
+    .then((trade) => {
+      return res.status(200).send(trade);
+    })
+    .catch((err) => {
+      return res.status(400).send({ error: 'Unable to fetch trade' });
+    });
+});
 
 // POST trade
 router.post('/', (req, res) => {
@@ -48,6 +60,7 @@ router.post('/', (req, res) => {
     sellHelper.sellTradeHandler(req, res);
   }
 });
+
 // PUT trade
 router.put('/:id', (req, res) => {
   if (!req.body) {
@@ -82,14 +95,20 @@ router.put('/:id', (req, res) => {
   }
   updateHelper.updateToBuyTrade(req, res);
 });
-// GET all trades
-router.get('/', (req, res) => {
-  Trade.find({})
-    .then((trade) => {
-      return res.status(200).send(trade);
-    })
-    .catch((err) => {
-      return res.status(400).send({ error: 'Unable to fetch trade' });
-    });
+
+// DELETE trade
+router.delete('/:id', (req, res) => {
+  if (!req.params.id) {
+    return res
+      .status(400)
+      .send({ error: 'Id must be present in the DELETE request' });
+  }
+  // return res.status(200).send({ message: 'Id found' });
+  const trade = Trade.find({ tradeId: req.params.id });
+  if (!trade) {
+    return res.status(400).send({ error: 'Invalid tradeId sent' });
+  }
+  deleteHelper.deleteTradeHandler(req, res);
 });
+
 module.exports = router;

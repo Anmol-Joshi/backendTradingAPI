@@ -1,6 +1,6 @@
 const Trade = require('../models/trade.js');
 const Portfolio = require('../models/portfolio.js');
-
+const updatePortfolio = require('../middlewares/updatePortfolio');
 //Invokes addToPortfolio and adds the BUY Trades in db.
 const updateToBuyTrade = async (req, res) => {
   const { price, quantity, tradeType } = req.body;
@@ -21,6 +21,8 @@ const updateToBuyTrade = async (req, res) => {
   const portfolio = await Portfolio.findOne({
     tickerSymbol: trade.tickerSymbol,
   });
+  // validate if portfolio value goes -ive or not if transaction succeeds
+  // if it goes -ive, send error, else execute trade
   if (portfolio.quantity + quantity * sign2 - sign1 * trade.quantity < 0) {
     return res.status(400).send({
       error:
@@ -35,66 +37,7 @@ const updateToBuyTrade = async (req, res) => {
   if (!tradeSavedFlag) {
     return res.status(500).send({ error: 'Error while updating trade' });
   }
-  // get average buy price for a particular Security
-  const avgBuyPrice = await Trade.aggregate([
-    {
-      $match: {
-        $and: [{ tickerSymbol: trade.tickerSymbol }, { tradeType: 'BUY' }],
-      },
-    },
-    {
-      $group: {
-        _id: 'weighted average',
-        numerator: { $sum: { $multiply: ['$price', '$quantity'] } },
-        denominator: { $sum: '$quantity' },
-      },
-    },
-    {
-      $project: {
-        average: { $divide: ['$numerator', '$denominator'] },
-      },
-    },
-  ]);
-  //get total BUY quantity for particular Security
-  const buyQuantity = await Trade.aggregate([
-    {
-      $match: {
-        $and: [{ tickerSymbol: trade.tickerSymbol }, { tradeType: 'BUY' }],
-      },
-    },
-    {
-      $group: {
-        _id: 'quantity',
-        quantity: { $sum: '$quantity' },
-      },
-    },
-  ]);
-  //get total SELL quantity for particular Security
-  const sellQuantity = await Trade.aggregate([
-    {
-      $match: {
-        $and: [{ tickerSymbol: trade.tickerSymbol }, { tradeType: 'SELL' }],
-      },
-    },
-    {
-      $group: {
-        _id: 'quantity',
-        quantity: { $sum: '$quantity' },
-      },
-    },
-  ]);
-  portfolio.averagePrice = avgBuyPrice[0].average;
-  if (sellQuantity[0] !== undefined) {
-    portfolio.quantity = buyQuantity[0].quantity - sellQuantity[0].quantity;
-  } else {
-    portfolio.quantity = buyQuantity[0].quantity;
-  }
-  const updatePortfolioResult = await portfolio.save();
-  if (!updatePortfolioResult) {
-    return res.status(500).send({ error: 'Failed to save trade' });
-  } else {
-    return res.status(200).send({ message: 'Trade and portfolio updated' });
-  }
+  updatePortfolio.updatePortfolioForTicker(req, res, trade.tickerSymbol);
 };
 
 module.exports = {
