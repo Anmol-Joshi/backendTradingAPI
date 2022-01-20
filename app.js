@@ -40,19 +40,7 @@ db.connect({
   database: process.env.DB_NAME,
 }).then(() => {
   //Handle /api with the api middleware
-  app.use(
-    '/api',
-    // session({
-    //   genid() {
-    //     return genuuid(); // use UUIDs for session IDs
-    //   },
-    //   store: new MongoStore({ client: db.getClient() }),
-    //   secret: process.env.SESSION_SECRET,
-    //   resave: false,
-    //   saveUninitialized: true,
-    // }),
-    api
-  );
+  app.use('/api', api);
 
   //Handle non-api routes with static build folder
   app.use(express.static(path.join(__dirname, 'build')));

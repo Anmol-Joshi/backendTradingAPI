@@ -1,53 +1,95 @@
 const express = require('express');
 const router = express.Router();
 const Trade = require('../models/trade.js');
-const IdCounter = require('../models/idCounter.js');
 const buyHelper = require('../middlewares/buyHelper');
+const sellHelper = require('../middlewares/sellHelper');
+const updateHelper = require('../middlewares/updateHelper');
 
+// POST trade
 router.post('/', (req, res) => {
   if (!req.body) {
-    res.status(400).send({ error: 'Empty body sent in request' });
-    return;
+    return res.status(400).send({ error: 'Empty body sent in request' });
   }
   const tradeBody = req.body;
 
-  if (!tradeBody) {
-    res.status(400).send({ error: 'tradeBody not present in request' });
-    return;
+  if (!req.body.tickerSymbol) {
+    return res
+      .status(400)
+      .send({ error: 'tickerSymbol must be present in body' });
+  }
+  if (!req.body.price) {
+    return res.status(400).send({ error: 'price must be present in body' });
+  }
+  if (!req.body.quantity) {
+    return res.status(400).send({ error: 'quantity must be present in body' });
+  }
+  if (req.body.price < 0) {
+    return res
+      .status(400)
+      .send({ message: 'price must be greater than equal 0' });
+  }
+  if (req.body.quantity < 0) {
+    return res
+      .status(400)
+      .send({ error: 'quantity must be greater than equal 0' });
+  }
+  if (!req.body.tradeType) {
+    return res.status(400).send({ error: 'tradeType must be present in body' });
+  }
+  if (
+    tradeBody.tradeType.toUpperCase() !== 'BUY' &&
+    tradeBody.tradeType.toUpperCase() !== 'SELL'
+  ) {
+    return res.status(400).send({ error: 'tradeType should be BUY or SELL' });
   }
   if (req.body.tradeType.toUpperCase() == 'BUY') {
-    buyHelper.createAndSaveNewBuyTrade(req, res);
+    buyHelper.buyTradeHandler(req, res);
   } else if (req.body.tradeType.toUpperCase() == 'SELL') {
-    createAndSaveNewSellTrade(req, res);
-    async function createAndSaveNewSellTrade(req, res) {
-      let response = IdCounter.updateMany({}, { $inc: { tradeId: 1 } });
-      if (response.err) {
-        console.log('error', err);
-      } else {
-        await IdCounter.updateMany({}, { $inc: { tradeId: 1 } });
-        const { tradeId } = await IdCounter.findOne({});
-        console.log(req.body);
-        const trade = new Trade({
-          tickerSymbol: req.body.tickerSymbol,
-          tradeId: tradeId,
-          price: req.body.price,
-          quantity: req.body.quantity,
-          tradeType: req.body.tradeType,
-        });
-        const result = await trade.save();
-        if (result) {
-          res.status(200).send('Trade saved');
-        } else {
-          res.status(400).send('Trade saved');
-        }
-      }
-    }
+    sellHelper.sellTradeHandler(req, res);
   }
 });
+// PUT trade
+router.put('/:id', (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({ error: 'Empty body sent in request' });
+  }
+  const { price, quantity, tradeType } = req.body;
+
+  if (!req.body.price) {
+    return res.status(400).send({ error: 'price must be present in body' });
+  }
+  if (!req.body.quantity) {
+    return res.status(400).send({ error: 'quantity must be present in body' });
+  }
+  if (req.body.price < 0) {
+    return res
+      .status(400)
+      .send({ message: 'price must be greater than equal 0' });
+  }
+  if (req.body.quantity < 0) {
+    return res
+      .status(400)
+      .send({ error: 'quantity must be greater than equal 0' });
+  }
+  if (!req.body.tradeType) {
+    return res.status(400).send({ error: 'tradeType must be present in body' });
+  }
+  if (
+    req.body.tradeType.toUpperCase() !== 'BUY' &&
+    req.body.tradeType.toUpperCase() !== 'SELL'
+  ) {
+    return res.status(400).send({ error: 'tradeType should be BUY or SELL' });
+  }
+  updateHelper.updateToBuyTrade(req, res);
+});
+// GET all trades
 router.get('/', (req, res) => {
-  Trade.find({}).then((trade) => {
-    console.log(trade);
-  });
-  res.send({ Hello: 'World' });
+  Trade.find({})
+    .then((trade) => {
+      return res.status(200).send(trade);
+    })
+    .catch((err) => {
+      return res.status(400).send({ error: 'Unable to fetch trade' });
+    });
 });
 module.exports = router;
