@@ -2,7 +2,7 @@ const Trade = require('../models/trade.js');
 const IdCounter = require('../models/idCounter.js');
 const Portfolio = require('../models/portfolio.js');
 
-//Invokes addToPortfolio and adds the BUY Trades in db.
+//Invokes addToPortfolio and adds the BUY Trades in "trades"
 const buyTradeHandler = async (req, res) => {
   addToPortfolio(req, res);
   // used to generate trade id to be used for tracking trades
@@ -31,7 +31,7 @@ const buyTradeHandler = async (req, res) => {
   }
 };
 
-//Adds the BUY trades to portfolio
+//Adds the BUY trades to "portfolio"
 const addToPortfolio = async (req, res) => {
   const existingSecurityFlag = await Portfolio.exists({
     tickerSymbol: req.body.tickerSymbol,

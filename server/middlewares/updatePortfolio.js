@@ -1,6 +1,7 @@
 const Trade = require('../models/trade.js');
 const Portfolio = require('../models/portfolio.js');
 
+// update portfolio with quantity and average buy price
 const updatePortfolioForTicker = async (req, res, tickerSymbol) => {
   // get average buy price for a particular Security
   const portfolio = await Portfolio.findOne({

@@ -3,6 +3,7 @@ const IdCounter = require('../models/idCounter.js');
 const Portfolio = require('../models/portfolio.js');
 const updatePortfolio = require('../middlewares/updatePortfolio');
 
+// checks if tradeId is valid, if valid, delete the trade, else return appropriate response
 const deleteTradeHandler = async (req, res) => {
   const { id } = req.params;
   const trade = await Trade.findOne({ tradeId: id });
