@@ -2,7 +2,7 @@ const Trade = require('../models/trade.js');
 const Portfolio = require('../models/portfolio.js');
 const updatePortfolio = require('../middlewares/updatePortfolio');
 //Invokes addToPortfolio and adds the BUY Trades in db.
-const updateToBuyTrade = async (req, res) => {
+const updateTrade = async (req, res) => {
   const { price, quantity, tradeType } = req.body;
   //sign1-> sign1=1 when tradeType(current trade) value="BUY" and -1 when "SELL"
   //sign2-> sign2=1 when new value(for trade)="BUY" and -1 when "SELL"
@@ -41,5 +41,5 @@ const updateToBuyTrade = async (req, res) => {
 };
 
 module.exports = {
-  updateToBuyTrade,
+  updateTrade,
 };

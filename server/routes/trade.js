@@ -10,7 +10,21 @@ const deleteHelper = require('../middlewares/deleteHelper');
 router.get('/', (req, res) => {
   Trade.find({})
     .then((trade) => {
-      return res.status(200).send(trade);
+      // if no trades present return appropriate response
+      if (trade.length === 0) {
+        return res.status(200).send({ message: 'No trade present' });
+      }
+      //group the trades according to the ticker symbol
+      const result = {};
+      for (let i = 0; i < trade.length; i++) {
+        if (result[trade[i].tickerSymbol] !== undefined) {
+          result[trade[i].tickerSymbol].push(trade[i]);
+        } else {
+          result[trade[i].tickerSymbol] = [];
+          result[trade[i].tickerSymbol].push(trade[i]);
+        }
+      }
+      return res.status(200).send(result);
     })
     .catch((err) => {
       return res.status(400).send({ error: 'Unable to fetch trade' });
@@ -85,7 +99,7 @@ router.put('/:id', (req, res) => {
   ) {
     return res.status(400).send({ error: 'tradeType should be BUY or SELL' });
   }
-  updateHelper.updateToBuyTrade(req, res);
+  updateHelper.updateTrade(req, res);
 });
 
 // DELETE trade
@@ -95,12 +109,14 @@ router.delete('/:id', (req, res) => {
       .status(400)
       .send({ error: 'Id must be present in the DELETE request' });
   }
-  // return res.status(200).send({ message: 'Id found' });
-  const trade = Trade.find({ tradeId: req.params.id });
-  if (!trade) {
-    return res.status(400).send({ error: 'Invalid tradeId sent' });
-  }
-  deleteHelper.deleteTradeHandler(req, res);
+  const checkIfTradeExists = async (req, res) => {
+    const trade = await Trade.find({ tradeId: req.params.id });
+    if (trade.length == 0) {
+      return res.status(400).send({ error: 'Invalid tradeId sent' });
+    }
+    deleteHelper.deleteTradeHandler(req, res);
+  };
+  checkIfTradeExists(req, res);
 });
 
 module.exports = router;
