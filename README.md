@@ -103,6 +103,7 @@ Status: 400
 ```
 
 ```js
+// edit a trade
 PUT "https://backend-solution.herokuapp.com/api/trade/:id"
 
 Sample Request Body:
@@ -139,8 +140,8 @@ Status: 200
 ```
 
 ```js
-DELETE "https://backend-solution.herokuapp.com/api/trade/:id"
 //delete trade with id equal to :id
+DELETE "https://backend-solution.herokuapp.com/api/trade/:id"
 Sample Response Body:
 {
     "message": "Trade and portfolio updated/deleted"
@@ -157,8 +158,8 @@ Status: 400
 ## Portfolio:-
 
 ```js
-GET "https://backend-solution.herokuapp.com/api/portfolio/"
 // get portfolio elements
+GET "https://backend-solution.herokuapp.com/api/portfolio/"
 Sample Response Body:
 [
     {
@@ -182,7 +183,10 @@ Status: 200
 
 ```
 
+## Returns:-
+
 ```js
+// get returns
 GET "https://backend-solution.herokuapp.com/api/portfolio/returns"
 // get current returns in portfolio
 // return is calculated as (100-buyAverage)*averagePrice
