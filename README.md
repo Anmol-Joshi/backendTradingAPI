@@ -139,7 +139,7 @@ Status: 200
 
 ```js
 //delete trade with id equal to :id (add actual id instead of :id)
-DELETE <li>https://backend-solution.herokuapp.com/api/trade/:id</li>
+DELETE "https://backend-solution.herokuapp.com/api/trade/:id"
 Sample Response Body:
 {
     "message": "Trade and portfolio updated/deleted"
