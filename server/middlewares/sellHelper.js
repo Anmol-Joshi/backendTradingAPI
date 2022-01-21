@@ -60,7 +60,8 @@ const sellFromPortfolio = async (req, res) => {
   const portfolio = await Portfolio.findOne({
     tickerSymbol: req.body.tickerSymbol.toUpperCase(),
   });
-  const tradeReturn = req.body.price - portfolio.averagePrice;
+  const tradeReturn =
+    req.body.quantity * (req.body.price - portfolio.averagePrice);
   portfolio.quantity = portfolio.quantity - req.body.quantity;
   const result = await portfolio.save();
 
