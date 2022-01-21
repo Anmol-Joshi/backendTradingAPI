@@ -109,7 +109,6 @@ PUT "https://backend-solution.herokuapp.com/api/trade/:id"
 Sample Request Body:
 //updated quantity from 2 to 20
 {
-     "tickerSymbol": "MSFT",
     "price":1,
     "quantity":20,
     "tradeType":"buy"
@@ -124,10 +123,9 @@ Status: 200
 Sample Request Body:
 //trying to sell more quantity than present in portfolio
 {
-     "tickerSymbol": "MSFT",
     "price":1,
     "quantity":23,
-    "tradeType":"buy"
+    "tradeType":"sell"
 }
 
 Sample Response Body:
@@ -140,8 +138,8 @@ Status: 200
 ```
 
 ```js
-//delete trade with id equal to :id
-DELETE "https://backend-solution.herokuapp.com/api/trade/:id"
+//delete trade with id equal to :id (add actual id instead of :id)
+DELETE <li>https://backend-solution.herokuapp.com/api/trade/:id</li>
 Sample Response Body:
 {
     "message": "Trade and portfolio updated/deleted"
