@@ -1,3 +1,5 @@
+https://backend-solution.herokuapp.com/api/trade
+
 GET:- localhost:4000/api/trade
 
 POST:- localhost:4000/api/trade

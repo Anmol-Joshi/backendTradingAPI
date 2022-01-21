@@ -35,15 +35,11 @@ router.post('/', (req, res) => {
   if (!req.body.quantity) {
     return res.status(400).send({ error: 'quantity must be present in body' });
   }
-  if (req.body.price < 0) {
-    return res
-      .status(400)
-      .send({ message: 'price must be greater than equal 0' });
+  if (req.body.price <= 0) {
+    return res.status(400).send({ message: 'price must be greater than 0' });
   }
-  if (req.body.quantity < 0) {
-    return res
-      .status(400)
-      .send({ error: 'quantity must be greater than equal 0' });
+  if (req.body.quantity <= 0) {
+    return res.status(400).send({ error: 'quantity must be greater than 0' });
   }
   if (!req.body.tradeType) {
     return res.status(400).send({ error: 'tradeType must be present in body' });
@@ -74,15 +70,11 @@ router.put('/:id', (req, res) => {
   if (!req.body.quantity) {
     return res.status(400).send({ error: 'quantity must be present in body' });
   }
-  if (req.body.price < 0) {
-    return res
-      .status(400)
-      .send({ message: 'price must be greater than equal 0' });
+  if (req.body.price <= 0) {
+    return res.status(400).send({ message: 'price must be greater than  0' });
   }
-  if (req.body.quantity < 0) {
-    return res
-      .status(400)
-      .send({ error: 'quantity must be greater than equal 0' });
+  if (req.body.quantity <= 0) {
+    return res.status(400).send({ error: 'quantity must be greater than  0' });
   }
   if (!req.body.tradeType) {
     return res.status(400).send({ error: 'tradeType must be present in body' });
