@@ -1,22 +1,3 @@
-https://backend-solution.herokuapp.com/api/trade
-
-# Portfolio APSs
-
-POST:- localhost:4000/api/trade
-{
-"tickerSymbol":"HOOD",
-"price":100,
-"quantity":1,
-"tradeType":"sell"
-}
-PUT:- localhost:4000/api/trade/18
-
-{
-"price":100,
-"quantity":1,
-"tradeType":"sell"
-}
-
 # API Design:-
 
 # Routes:-
@@ -91,6 +72,7 @@ Status: 200
 ```
 
 ```js
+// post a trade
 POST "https://backend-solution.herokuapp.com/api/trade/"
 Sample Request Body:
  {
@@ -105,6 +87,7 @@ Sample Response Body:
    message: 'Trade saved'
 }
 Status: 200
+
 Sample Request Body:
 // tickerSymbol is missing so error is returned
  {
@@ -157,7 +140,7 @@ Status: 200
 
 ```js
 DELETE "https://backend-solution.herokuapp.com/api/trade/:id"
-
+//delete trade with id equal to :id
 Sample Response Body:
 {
     "message": "Trade and portfolio updated/deleted"
@@ -174,17 +157,42 @@ Status: 400
 ## Portfolio:-
 
 ```js
-DELETE "https://backend-solution.herokuapp.com/api/trade/:id"
-
+GET "https://backend-solution.herokuapp.com/api/portfolio/"
+// get portfolio elements
 Sample Response Body:
-{
-    "message": "Trade and portfolio updated/deleted"
-}
+[
+    {
+        "_id": "61ead2d7ceb8fda8ea215c5b",
+        "tickerSymbol": "MSFT",
+        "averagePrice": 1,
+        "quantity": 20,
+        "createdAt": "2022-01-21T15:20:50.892Z",
+        "updatedAt": "2022-01-21T15:20:50.892Z",
+        "__v": 0
+    }
+]
 Status: 200
 
+// when portfolio is empty
+Sample Response Body:
+
+{ message: 'Portfolio is currently empty' }
+
+Status: 200
+
+```
+
+```js
+GET "https://backend-solution.herokuapp.com/api/portfolio/returns"
+// get current returns in portfolio
+// return is calculated as (100-buyAverage)*averagePrice
+// selling price is assumed to be 100 since we don't have access to the ticker price
 Sample Response Body:
 {
-    "error": "Invalid tradeId sent"
+    "message": "Portfolio profit is: 1980"
 }
-Status: 400
+
+Status: 200
+
+
 ```
